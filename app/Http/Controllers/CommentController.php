@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCommentFormRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CommentController extends Controller
 {
@@ -32,9 +34,22 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreCommentFormRequest $request)
     {
-        //
+        try{
+            DB::beginTransaction();
+            $comment = $request->user()->Comment()->create($request->except('_token'));
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollBack();
+            return redirect()
+                ->route('posts.show', $request->get('post_id'))
+                ->withError('Erro ao criar o comentário.');
+        }
+
+        return redirect()
+            ->route('posts.show', $comment->post_id)
+            ->withSuccess('Comentário criado com sucesso.');
     }
 
     /**

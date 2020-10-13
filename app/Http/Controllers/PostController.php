@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -13,7 +14,11 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $listPost = Post::with('Comment')->paginate();
+
+        return view('posts.index', compact([
+            'listPost'
+        ]));
     }
 
     /**
@@ -45,7 +50,9 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        //
+        $post = Post::with(['Comment.User', 'User'])->find($id);
+
+        return view('posts.show', compact('post'));
     }
 
     /**

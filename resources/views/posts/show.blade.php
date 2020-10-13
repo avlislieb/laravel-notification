@@ -4,21 +4,13 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h1>Listagem posts</h1>
-                <hr>
+                <h1>{{ $post->title }}</h1>
             </div>
             <div class="col-12">
-                @forelse($listPost as $key => $post)
-                    <a href="{{ route('posts.show', $post->id) }}">
-                        {{ $post->title }}
-                    </a>
-                    <hr>
-                @empty
-                    <p>Nenhum post encontrado</p>
-                @endforelse
+                <p>{{ $post->body }}</p>
             </div>
             <div class="col-12">
-                {!! $listPost->links() !!}
+                @include('posts.comments.comment')
             </div>
         </div>
     </div>
