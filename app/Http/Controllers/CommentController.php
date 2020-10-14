@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCommentFormRequest;
+use App\Notifications\PostCommented;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -39,9 +40,13 @@ class CommentController extends Controller
         try{
             DB::beginTransaction();
             $comment = $request->user()->Comment()->create($request->except('_token'));
+            $author = $comment->Post->User;
+            $author->notify(new PostCommented($comment));
+
             DB::commit();
         }catch(\Exception $e){
             DB::rollBack();
+            dd($e->getMessage());
             return redirect()
                 ->route('posts.show', $request->get('post_id'))
                 ->withError('Erro ao criar o comentário.');
