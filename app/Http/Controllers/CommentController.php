@@ -46,7 +46,7 @@ class CommentController extends Controller
             DB::commit();
         }catch(\Exception $e){
             DB::rollBack();
-            dd($e->getMessage());
+
             return redirect()
                 ->route('posts.show', $request->get('post_id'))
                 ->withError('Erro ao criar o comentário.');
